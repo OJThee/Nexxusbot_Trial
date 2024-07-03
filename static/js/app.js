@@ -4,12 +4,12 @@ class Chatbox {
             openButton: document.querySelector('.chatbox__button'),
             chatBox: document.querySelector('.chatbox__support'),
             sendButton: document.querySelector('.send__button'),
-            resetButton: document.querySelector('#reset')
+            resetButton: document.querySelector('#reset')  // Added reset button
         }
 
         this.state = false;
         this.messages = [];
-        this.abusiveCounter = 0;
+        this.abusiveCounter = 0;  // Added counter for abusive behavior
     }
 
     display() {
@@ -17,7 +17,7 @@ class Chatbox {
 
         openButton.addEventListener('click', () => this.toggleState(chatBox));
         sendButton.addEventListener('click', () => this.onSendButton(chatBox));
-        resetButton.addEventListener('click', () => this.resetChat(chatBox)); 
+        resetButton.addEventListener('click', () => this.resetChat(chatBox));  // Added event listener for reset button
 
         const node = chatBox.querySelector('input');
         node.addEventListener("keyup", ({key}) => {
@@ -45,10 +45,12 @@ class Chatbox {
             return;
         }
 
+        // Always push the user's message
         let msg1 = { name: "User", message: text1 };
         this.messages.push(msg1);
         this.updateChatText(chatbox);
 
+        // If counter reached 3, respond with the final message and ignore fetching new responses
         if (this.abusiveCounter >= 3) {
             this.messages.push({ name: "Sam", message: "Please contact our team at team@nexxuslab.com. I will no longer entertain any of your messages. Thank you." });
             this.updateChatText(chatbox);
@@ -68,6 +70,7 @@ class Chatbox {
           .then(r => {
             let msg2 = { name: "Sam", message: r.answer };
 
+            // Check if the response is the specific abusive message
             if (r.answer === "I understand that you might be frustrated, but we do not tolerate aggressive or abusive behavior. Please communicate respectfully. If this behavior continues, we will no longer entertain any questions. Thank you for your understanding.") {
                 this.abusiveCounter++;
             }
@@ -97,11 +100,12 @@ class Chatbox {
     }
 
     resetChat(chatbox) {
-
+        // Clear all messages in the chatbox and reset the abusive counter
         this.messages = [];
         this.abusiveCounter = 0;
         this.updateChatText(chatbox);
 
+        // Also clear the chatbox HTML
         const chatmessage = chatbox.querySelector('.chatbox__messages > div');
         chatmessage.innerHTML = '';
     }
@@ -109,4 +113,3 @@ class Chatbox {
 
 const chatbox = new Chatbox();
 chatbox.display();
-
